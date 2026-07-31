@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models import Activity
@@ -28,3 +29,10 @@ class ActivityRepository:
         self.session.refresh(activity)
 
         return activity
+
+    def get_all(self) -> list[Activity]:
+        statement = select(Activity).order_by(Activity.start_time)
+
+        return list(
+            self.session.scalars(statement).all()
+        )

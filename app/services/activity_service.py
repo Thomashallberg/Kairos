@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from app.repositories.activity_repository import ActivityRepository
 from app.models import Activity
+from app.repositories.activity_repository import ActivityRepository
 
 
 class ActivityService:
@@ -21,3 +21,6 @@ class ActivityService:
             process_name=process_name,
             window_title=window_title,
         )
+
+    def get_all_activities(self) -> list[Activity]:
+        return self.repository.get_all()
