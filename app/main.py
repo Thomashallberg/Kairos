@@ -1,5 +1,8 @@
+from app.collectors.activity_tracker import track_activity
+
+
 def main() -> None:
-    print("Kairos is running.")
+    track_activity()
 
 
 if __name__ == "__main__":
