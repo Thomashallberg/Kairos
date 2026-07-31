@@ -1,5 +1,5 @@
 from app.collectors.activity_tracker import track_activity
-from app.database.activity_repository import ActivityRepository
+from app.repositories.activity_repository import ActivityRepository
 from app.database.connection import SessionLocal, create_database
 from app.models import Activity
 from app.services.activity_service import ActivityService

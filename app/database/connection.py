@@ -2,9 +2,9 @@ from pathlib import Path
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from app.config import DATABASE_PATH
 
 
-DATABASE_PATH = Path("kairos.db")
 DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
 
 

@@ -3,11 +3,12 @@ from datetime import datetime
 
 from app.collectors.active_window import get_active_window
 from app.services.activity_service import ActivityService
+from app.config import TRACKING_INTERVAL_SECONDS
 
 
 def track_activity(
     activity_service: ActivityService,
-    interval_seconds: int = 2,
+    interval_seconds: int = TRACKING_INTERVAL_SECONDS,
 ) -> None:
     previous_window: dict[str, str | int | None] | None = None
     activity_start_time: datetime | None = None

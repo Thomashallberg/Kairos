@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.database.activity_repository import ActivityRepository
+from app.repositories.activity_repository import ActivityRepository
 from app.models import Activity
 
 
