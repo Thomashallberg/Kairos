@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, time
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -36,3 +36,15 @@ class ActivityRepository:
         return list(
             self.session.scalars(statement).all()
         )
+    def get_by_date(self, target_date: date) -> list[Activity]:
+        day_start = datetime.combine(target_date, time.min)
+        day_end = datetime.combine(target_date, time.max)
+
+        statement = (
+        select(Activity)
+        .where(Activity.start_time >= day_start)
+        .where(Activity.start_time <= day_end)
+        .order_by(Activity.start_time)
+        )
+
+        return list(self.session.scalars(statement).all())

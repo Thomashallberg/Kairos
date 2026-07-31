@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, date, time
 
-from app.models import Activity
 from app.repositories.activity_repository import ActivityRepository
+from app.models import Activity
 
 
 class ActivityService:
@@ -21,6 +21,10 @@ class ActivityService:
             process_name=process_name,
             window_title=window_title,
         )
-
     def get_all_activities(self) -> list[Activity]:
         return self.repository.get_all()
+    def get_activities_for_date(self, target_date: date) -> list[Activity]:
+        return self.repository.get_by_date(target_date)
+
+    def get_today_activities(self) -> list[Activity]:
+        return self.get_activities_for_date(date.today())
