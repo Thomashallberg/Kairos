@@ -1,8 +1,10 @@
-from app.collectors.activity_tracker import track_activity
+from app.database.connection import create_database
+from app.models import Activity
 
 
 def main() -> None:
-    track_activity()
+    create_database()
+    print("Kairos database initialized.")
 
 
 if __name__ == "__main__":

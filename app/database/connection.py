@@ -22,3 +22,6 @@ SessionLocal = sessionmaker(
     autoflush=False,
     expire_on_commit=False,
 )
+
+def create_database() -> None:
+    Base.metadata.create_all(bind=engine)
