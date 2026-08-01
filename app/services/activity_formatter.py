@@ -26,12 +26,21 @@ class ActivityFormatter:
         }
 
         process_text = ", ".join(sorted(process_names)) or "Okänt program"
+        
+        window_titles = {
+            activity.window_title
+            for activity in activities
+            if activity.window_title
+        }
+
+        context = ", ".join(sorted(window_titles)) or "Ingen ytterligare kontext"
 
         return (
             f"{start_time}–{end_time} | "
             f"{category} | "
-            f"{process_text}"
-        )
+            f"{process_text} | "
+            f"{context}"
+)
 
     @classmethod
     def format_activities(cls, activities: list[Activity]) -> str:
