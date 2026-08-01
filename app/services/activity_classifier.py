@@ -1,3 +1,9 @@
+from app.activity_rules import (
+    BROWSER_PROCESSES,
+    PROCESS_CATEGORY_RULES,
+    PROCESS_CONTAINS_RULES,
+    WINDOW_TITLE_RULES,
+)
 from app.models import Activity
 
 
@@ -7,22 +13,18 @@ class ActivityClassifier:
         process_name = (activity.process_name or "").lower()
         window_title = (activity.window_title or "").lower()
 
-        if "teams" in process_name or "teams" in window_title:
-            return "Meeting"
+        for keyword, category in WINDOW_TITLE_RULES.items():
+            if keyword in window_title:
+                return category
 
-        if "outlook" in process_name:
-            return "Email"
+        if process_name in PROCESS_CATEGORY_RULES:
+            return PROCESS_CATEGORY_RULES[process_name]
 
-        if process_name in {"code.exe", "pycharm64.exe"}:
-            return "Development"
+        for keyword, category in PROCESS_CONTAINS_RULES.items():
+            if keyword in process_name or keyword in window_title:
+                return category
 
-        if "jira" in window_title:
-            return "Issue Tracking"
-
-        if process_name in {"chrome.exe", "msedge.exe", "firefox.exe"}:
+        if process_name in BROWSER_PROCESSES:
             return "Browser"
-
-        if process_name == "explorer.exe":
-            return "File Management"
 
         return "Other"
