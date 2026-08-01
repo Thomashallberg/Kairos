@@ -82,7 +82,13 @@ def main() -> None:
                 ollama_client,
             )
 
-            print(ai_summary_service.summarize(report_date))
+            time_report = ai_summary_service.summarize(report_date)
+
+            for entry in time_report.entries:
+                print(
+                    f"{entry.start_time}–{entry.end_time}: "
+                    f"{entry.description}"
+                )
 
 
 if __name__ == "__main__":
