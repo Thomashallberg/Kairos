@@ -1,4 +1,5 @@
 from app.models import Activity
+from app.services.activity_classifier import ActivityClassifier
 
 
 class ActivityFormatter:
@@ -14,9 +15,11 @@ class ActivityFormatter:
 
         process_name = activity.process_name or "Okänt program"
         window_title = activity.window_title or "Ingen fönstertitel"
+        category = ActivityClassifier.classify(activity)
 
         return (
             f"{start_time}–{end_time} | "
+            f"{category} | "
             f"{process_name} | "
             f"{window_title}"
         )
