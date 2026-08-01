@@ -1,5 +1,6 @@
 from app.services.activity_formatter import ActivityFormatter
 from app.services.activity_service import ActivityService
+from app.services.activity_grouper import ActivityGrouper
 
 
 class DailyReportService:
@@ -10,3 +11,7 @@ class DailyReportService:
         activities = self.activity_service.get_today_activities()
 
         return ActivityFormatter.format_activities(activities)
+    def get_work_blocks(self):
+        activities = self.activity_service.get_today_activities()
+
+        return ActivityGrouper.build_work_blocks(activities)
