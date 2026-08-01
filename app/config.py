@@ -10,3 +10,7 @@ DATABASE_PATH = Path(DATABASE_NAME)
 
 # Activity Tracking
 TRACKING_INTERVAL_SECONDS = 2
+
+# AI
+OLLAMA_HOST = "http://localhost:11434"
+OLLAMA_MODEL = "qwen3:4b"
