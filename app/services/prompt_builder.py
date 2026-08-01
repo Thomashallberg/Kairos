@@ -39,12 +39,19 @@ class PromptBuilder:
         activity_sections: list[str] = []
 
         for block in work_blocks:
+            start_time = block.start_time.strftime("%H:%M")
+            end_time = (
+                block.end_time.strftime("%H:%M")
+                if block.end_time is not None
+                else "Ongoing"
+            )
+
             processes = ", ".join(block.processes) or "Unknown"
             context = ", ".join(block.context) or "No additional context"
 
             activity_sections.append(
                 f"""Time:
-{block.start_time}–{block.end_time}
+{start_time}–{end_time}
 
 Category:
 {block.category}
@@ -68,7 +75,6 @@ Rules:
 - Git commit messages are stronger evidence than window titles.
 - Preserve every time range exactly as provided.
 - Never merge different time ranges.
-- Ignore very short system events (less than 2 minutes) that clearly represent application switching or startup noise.
 - Focus on actual work performed.
 - Use professional English.
 - Keep every description to one concise sentence.
@@ -87,12 +93,6 @@ STRICT OUTPUT REQUIREMENTS:
 - Every line MUST follow this exact format:
 
 HH:MM–HH:MM: Professional work description
-
-Example:
-
-09:00–09:30: Participated in the daily scrum meeting.
-09:30–10:20: Implemented the activity service for Kairos.
-10:20–10:45: Improved activity reporting for Jira task KAI-123.
 
 Observed Work Blocks:
 

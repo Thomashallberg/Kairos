@@ -39,12 +39,8 @@ class ActivityGrouper:
 
             work_blocks.append(
                 WorkBlock(
-                    start_time=first.start_time.strftime("%H:%M"),
-                    end_time=(
-                        last.end_time.strftime("%H:%M")
-                        if last.end_time
-                        else "Pågår"
-                    ),
+                    start_time=first.start_time,
+                    end_time=last.end_time,
                     category=ActivityClassifier.classify(first),
                     processes=sorted(
                         {
