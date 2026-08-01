@@ -1,5 +1,6 @@
 import argparse
-
+from html import parser
+from datetime import date
 from app.ai.ollama_client import OllamaClient
 from app.collectors.activity_tracker import track_activity
 from app.database.connection import SessionLocal, create_database
@@ -18,21 +19,35 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "command",
-        choices=[
-            "track",
-            "report",
-            "summarize",
-        ],
-        help="Command to execute",
-    )
+    "command",
+    choices=[
+        "track",
+        "report",
+        "summarize",
+    ],
+    help="Command to execute",
+)
+
+    parser.add_argument(
+        "date",
+        nargs="?",
+        help="Date in YYYY-MM-DD format (defaults to today)",
+)
 
     return parser.parse_args()
 
 
 def main() -> None:
+    
     args = parse_args()
     command = args.command
+    
+    report_date = (
+        date.fromisoformat(args.date)
+        if args.date
+        else date.today()
+)
+    
 
     create_database()
 
@@ -45,7 +60,7 @@ def main() -> None:
             track_activity(activity_service)
 
         elif command == "report":
-            print(daily_report_service.generate_today_report())
+            print(daily_report_service.generate_report(report_date))
 
         elif command == "summarize":
             git_integration = GitIntegration()
@@ -59,7 +74,7 @@ def main() -> None:
                 ollama_client,
             )
 
-            print(ai_summary_service.summarize_today())
+            print(ai_summary_service.summarize(report_date))
 
 
 if __name__ == "__main__":

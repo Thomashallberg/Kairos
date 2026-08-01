@@ -1,3 +1,5 @@
+from datetime import date
+
 from app.integrations.git_integration import GitIntegration
 from app.services.daily_report_service import DailyReportService
 
@@ -12,7 +14,12 @@ class PromptBuilder:
         self.git_integration = git_integration
 
     def build_daily_summary_prompt(self) -> str:
-        work_blocks = self.daily_report_service.get_today_work_blocks()
+        return self.build_summary_prompt(date.today())
+
+    def build_summary_prompt(self, target_date: date) -> str:
+        work_blocks = self.daily_report_service.get_work_blocks_for_date(
+            target_date
+        )
         branch = self.git_integration.get_current_branch()
         commits = self.git_integration.get_recent_commits()
         changed_files = self.git_integration.get_changed_files()
@@ -28,6 +35,7 @@ class PromptBuilder:
             if changed_files
             else "- No uncommitted files"
         )
+
         activity_sections: list[str] = []
 
         for block in work_blocks:
@@ -36,70 +44,16 @@ class PromptBuilder:
 
             activity_sections.append(
                 f"""Time:
-        {block.start_time}–{block.end_time}
+{block.start_time}–{block.end_time}
 
-        Category:
-        {block.category}
+Category:
+{block.category}
 
-        Processes:
-        {processes}
+Processes:
+{processes}
 
-        Context:
-        {context}
-        """
-            )
-
-        activity_text = "\n\n".join(activity_sections)
-
-        from app.integrations.git_integration import GitIntegration
-from app.services.daily_report_service import DailyReportService
-
-
-class PromptBuilder:
-    def __init__(
-        self,
-        daily_report_service: DailyReportService,
-        git_integration: GitIntegration,
-    ) -> None:
-        self.daily_report_service = daily_report_service
-        self.git_integration = git_integration
-
-    def build_daily_summary_prompt(self) -> str:
-        work_blocks = self.daily_report_service.get_today_work_blocks()
-        branch = self.git_integration.get_current_branch()
-        commits = self.git_integration.get_recent_commits()
-        changed_files = self.git_integration.get_changed_files()
-
-        commits_text = (
-            "\n".join(f"- {commit}" for commit in commits)
-            if commits
-            else "- No recent commits found"
-        )
-
-        changed_files_text = (
-            "\n".join(f"- {file}" for file in changed_files)
-            if changed_files
-            else "- No uncommitted files"
-        )
-        activity_sections: list[str] = []
-
-        for block in work_blocks:
-            processes = ", ".join(block.processes) or "Unknown"
-            context = ", ".join(block.context) or "No additional context"
-
-            activity_sections.append(
-                f"""Time:
-        {block.start_time}–{block.end_time}
-
-        Category:
-        {block.category}
-
-        Processes:
-        {processes}
-
-        Context:
-        {context}
-        """
+Context:
+{context}"""
             )
 
         activity_text = "\n\n".join(activity_sections)

@@ -19,8 +19,13 @@ class OllamaClient:
                 "model": self.model,
                 "prompt": prompt,
                 "stream": False,
+                "keep_alive": "10m",
+                "options": {
+                    "temperature": 0.0,
+                    "seed": 42,
+                },
             },
-            timeout=300,
+            timeout=(10, 600),
         )
 
         response.raise_for_status()
