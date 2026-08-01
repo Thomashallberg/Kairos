@@ -1,4 +1,4 @@
-from app.models import Activity
+from app.models import Activity, WorkBlock
 from app.services.activity_classifier import ActivityClassifier
 
 
@@ -25,3 +25,42 @@ class ActivityGrouper:
         groups.append(current_group)
 
         return groups
+    @staticmethod
+    def build_work_blocks(
+        activities: list[Activity],
+    ) -> list[WorkBlock]:
+        groups = ActivityGrouper.group_consecutive(activities)
+
+        work_blocks: list[WorkBlock] = []
+
+        for group in groups:
+            first = group[0]
+            last = group[-1]
+
+            work_blocks.append(
+                WorkBlock(
+                    start_time=first.start_time.strftime("%H:%M"),
+                    end_time=(
+                        last.end_time.strftime("%H:%M")
+                        if last.end_time
+                        else "Pågår"
+                    ),
+                    category=ActivityClassifier.classify(first),
+                    processes=sorted(
+                        {
+                            activity.process_name
+                            for activity in group
+                            if activity.process_name
+                        }
+                    ),
+                    context=sorted(
+                        {
+                            activity.window_title
+                            for activity in group
+                            if activity.window_title
+                        }
+                    ),
+                )
+            )
+
+        return work_blocks
