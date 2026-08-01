@@ -4,6 +4,7 @@ from app.models import WorkBlock
 from app.services.activity_formatter import ActivityFormatter
 from app.services.activity_grouper import ActivityGrouper
 from app.services.activity_service import ActivityService
+from app.services.work_block_normalizer import WorkBlockNormalizer
 
 
 class DailyReportService:
@@ -15,7 +16,9 @@ class DailyReportService:
         target_date: date,
     ) -> list[WorkBlock]:
         activities = self.activity_service.get_activities_for_date(target_date)
-        return ActivityGrouper.build_work_blocks(activities)
+        work_blocks = ActivityGrouper.build_work_blocks(activities)
+
+        return WorkBlockNormalizer.merge_short_interruptions(work_blocks)
 
     def get_today_work_blocks(self) -> list[WorkBlock]:
         return self.get_work_blocks_for_date(date.today())
