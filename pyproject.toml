@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "kairos"
 version = "0.1.0"
@@ -10,7 +14,14 @@ authors = [
 ]
 
 dependencies = [
-    "sqlalchemy",
+    "psutil",
     "pywin32",
-    "psutil"
+    "requests",
+    "sqlalchemy",
 ]
+
+[project.scripts]
+kairos = "app.main:main"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
