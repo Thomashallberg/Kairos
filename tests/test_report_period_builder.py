@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from app.models import WorkBlock, WorkSession
+from app.models import WorkBlock, ReportPeriod, WorkSession
 from app.services.report_period_builder import ReportPeriodBuilder
 
 

@@ -62,9 +62,7 @@ def test_category_change_creates_new_group():
         "SQLAlchemy documentation - Google Chrome",
     )
 
-    groups = ActivityGrouper.group_consecutive(
-        [development, browser]
-    )
+    groups = ActivityGrouper.group_consecutive([development, browser])
 
     assert len(groups) == 2
     assert groups[0] == [development]

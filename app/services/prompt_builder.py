@@ -17,7 +17,7 @@ class PromptBuilder:
         return self.build_summary_prompt(date.today())
 
     def build_summary_prompt(self, target_date: date) -> str:
-        work_sessions = self.daily_report_service.get_work_sessions_for_date(
+        report_periods = self.daily_report_service.get_report_periods_for_date(
             target_date
         )
 
@@ -39,37 +39,48 @@ class PromptBuilder:
 
         activity_sections: list[str] = []
 
-        for session in work_sessions:
-            start_time = session.start_time.strftime("%H:%M")
+        for period in report_periods:
+            start_time = period.start_time.strftime("%H:%M")
             end_time = (
-                session.end_time.strftime("%H:%M")
-                if session.end_time is not None
+                period.end_time.strftime("%H:%M")
+                if period.end_time is not None
                 else "Ongoing"
             )
 
-            session_blocks: list[str] = []
+            period_sessions: list[str] = []
 
-            for block in session.work_blocks:
-                processes = ", ".join(block.processes) or "Unknown"
-                context = ", ".join(block.context) or "No additional context"
+            for session in period.work_sessions:
+                session_blocks: list[str] = []
 
-                session_blocks.append(
-                    f"""Category: {block.category}
+                for block in session.work_blocks:
+                    processes = ", ".join(block.processes) or "Unknown"
+                    context = ", ".join(block.context) or "No additional context"
+
+                    session_blocks.append(
+                        f"""Category: {block.category}
 Processes: {processes}
 Context: {context}"""
+                    )
+
+                blocks_text = "\n\n".join(session_blocks)
+
+                period_sessions.append(
+                    f"""Session category: {session.primary_category}
+Observed activities:
+{blocks_text}"""
                 )
 
-            blocks_text = "\n\n".join(session_blocks)
+            sessions_text = "\n\n".join(period_sessions)
 
             activity_sections.append(
-                f"""Session time:
+                f"""Report period:
 {start_time}–{end_time}
 
 Primary category:
-{session.primary_category}
+{period.primary_category}
 
-Observed activities:
-{blocks_text}"""
+Included sessions:
+{sessions_text}"""
             )
 
         activity_text = "\n\n---\n\n".join(activity_sections)
@@ -79,15 +90,15 @@ Observed activities:
 You MUST summarize the work ONLY from the supplied activity data and Git context.
 
 Rules:
-- Never invent meetings, customers, ticket numbers, projects, tasks or outcomes.
+- Never invent meetings, customers, ticket numbers, projects, tasks, or outcomes.
 - Never guess work that is not supported by the supplied data.
 - Git commit messages are stronger evidence than window titles.
-- Preserve every session time range exactly as provided.
-- Never merge different session time ranges.
+- Preserve every report period time range exactly as provided.
+- Never merge different report period time ranges.
 - Focus on actual work performed.
 - Use professional English.
 - Keep every description to one concise sentence.
-- Do not mention VS Code, Chrome, Explorer or application names unless they are essential for understanding the work.
+- Do not mention VS Code, Chrome, Explorer, or application names unless they are essential for understanding the work.
 
 STRICT OUTPUT REQUIREMENTS:
 - Return ONLY the final time report.
@@ -103,7 +114,7 @@ STRICT OUTPUT REQUIREMENTS:
 
 HH:MM–HH:MM: Professional work description
 
-Observed Work Sessions:
+Observed Report Periods:
 
 {activity_text}
 

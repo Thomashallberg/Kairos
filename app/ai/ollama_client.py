@@ -43,11 +43,7 @@ class OllamaClient:
 
         data = response.json()
 
-        generated_text = (
-        data.get("response")
-        or data.get("thinking")
-        or ""
-        ).strip()
+        generated_text = (data.get("response") or data.get("thinking") or "").strip()
 
         if not generated_text:
             raise RuntimeError(

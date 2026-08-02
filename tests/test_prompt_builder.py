@@ -1,14 +1,15 @@
-from datetime import datetime, date
+from datetime import date, datetime
 
 from app.models import WorkBlock, WorkSession
+from app.models.report_period import ReportPeriod
 from app.services.prompt_builder import PromptBuilder
 
 
 class FakeDailyReportService:
-    def get_work_sessions_for_date(
+    def get_report_periods_for_date(
         self,
         target_date: date,
-    ) -> list[WorkSession]:
+    ) -> list[ReportPeriod]:
         block = WorkBlock(
             start_time=datetime(2026, 8, 2, 9, 0),
             end_time=datetime(2026, 8, 2, 10, 0),
@@ -17,15 +18,21 @@ class FakeDailyReportService:
             context=["activity_service.py - Kairos"],
         )
 
+        session = WorkSession(
+            start_time=block.start_time,
+            end_time=block.end_time,
+            primary_category="Development",
+            work_blocks=[block],
+        )
+
         return [
-            WorkSession(
-                start_time=block.start_time,
-                end_time=block.end_time,
+            ReportPeriod(
+                start_time=session.start_time,
+                end_time=session.end_time,
                 primary_category="Development",
-                work_blocks=[block],
+                work_sessions=[session],
             )
         ]
-
 
 class FakeGitIntegration:
     def get_current_branch(self) -> str:
@@ -44,18 +51,16 @@ class FakeGitIntegration:
 def build_prompt() -> str:
     prompt_builder = PromptBuilder(
         FakeDailyReportService(),  # type: ignore[arg-type]
-        FakeGitIntegration(),      # type: ignore[arg-type]
+        FakeGitIntegration(),  # type: ignore[arg-type]
     )
 
-    return prompt_builder.build_summary_prompt(
-        date(2026, 8, 2)
-    )
+    return prompt_builder.build_summary_prompt(date(2026, 8, 2))
 
 
 def test_prompt_contains_work_session_context():
     prompt = build_prompt()
 
-    assert "Observed Work Sessions:" in prompt
+    assert "Observed Report Periods:" in prompt
     assert "09:00–10:00" in prompt
     assert "Primary category:\nDevelopment" in prompt
     assert "activity_service.py - Kairos" in prompt

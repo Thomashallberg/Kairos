@@ -31,6 +31,5 @@ class ActivityFormatter:
         work_blocks = ActivityGrouper.build_work_blocks(activities)
 
         return "\n".join(
-            cls.format_work_block(work_block)
-            for work_block in work_blocks
+            cls.format_work_block(work_block) for work_block in work_blocks
         )

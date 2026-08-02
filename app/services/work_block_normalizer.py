@@ -41,12 +41,10 @@ class WorkBlockNormalizer:
                         end_time=next_block.end_time,
                         category=previous_block.category,
                         processes=sorted(
-                            set(previous_block.processes)
-                            | set(next_block.processes)
+                            set(previous_block.processes) | set(next_block.processes)
                         ),
                         context=sorted(
-                            set(previous_block.context)
-                            | set(next_block.context)
+                            set(previous_block.context) | set(next_block.context)
                         ),
                     )
                 )

@@ -23,7 +23,8 @@ def test_single_work_block_creates_single_session():
     assert session.start_time == block.start_time
     assert session.end_time == block.end_time
     assert session.work_blocks == [block]
-    
+
+
 def test_supporting_browser_activity_belongs_to_same_work_session():
     start = datetime(2026, 8, 2, 9, 30)
 
@@ -71,7 +72,8 @@ def test_supporting_browser_activity_belongs_to_same_work_session():
         browser_research,
         development_after,
     ]
-    
+
+
 def test_meeting_breaks_work_session():
     start = datetime(2026, 8, 2, 9, 0)
 
@@ -108,8 +110,8 @@ def test_meeting_breaks_work_session():
     )
 
     assert len(sessions) == 3
-    
-    
+
+
 def test_empty_input_returns_empty_list():
     sessions = WorkSessionBuilder.build([])
 

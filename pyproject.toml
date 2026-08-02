@@ -25,3 +25,10 @@ kairos = "app.main:main"
 
 [tool.setuptools.packages.find]
 include = ["app*"]
+
+[tool.ruff.lint]
+ignore = [
+    "DTZ001",
+    "DTZ005",
+    "DTZ011",
+]

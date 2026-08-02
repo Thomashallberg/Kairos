@@ -2,8 +2,8 @@ import time
 from datetime import datetime
 
 from app.collectors.active_window import get_active_window
-from app.services.activity_service import ActivityService
 from app.config import TRACKING_INTERVAL_SECONDS
+from app.services.activity_service import ActivityService
 
 
 def track_activity(

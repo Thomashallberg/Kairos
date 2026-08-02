@@ -25,7 +25,7 @@ class ActivityGrouper:
         groups.append(current_group)
 
         return groups
-    
+
     @staticmethod
     def build_work_blocks(
         activities: list[Activity],

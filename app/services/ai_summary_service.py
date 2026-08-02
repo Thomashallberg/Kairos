@@ -6,7 +6,6 @@ from app.ai.ollama_client import OllamaClient
 from app.models import TimeReport, TimeReportEntry
 from app.services.prompt_builder import PromptBuilder
 
-
 TIME_REPORT_SCHEMA: dict[str, Any] = {
     "type": "object",
     "properties": {
