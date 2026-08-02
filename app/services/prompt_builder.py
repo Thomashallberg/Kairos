@@ -17,9 +17,10 @@ class PromptBuilder:
         return self.build_summary_prompt(date.today())
 
     def build_summary_prompt(self, target_date: date) -> str:
-        work_blocks = self.daily_report_service.get_work_blocks_for_date(
+        work_sessions = self.daily_report_service.get_work_sessions_for_date(
             target_date
         )
+
         branch = self.git_integration.get_current_branch()
         commits = self.git_integration.get_recent_commits()
         changed_files = self.git_integration.get_changed_files()
@@ -38,32 +39,40 @@ class PromptBuilder:
 
         activity_sections: list[str] = []
 
-        for block in work_blocks:
-            start_time = block.start_time.strftime("%H:%M")
+        for session in work_sessions:
+            start_time = session.start_time.strftime("%H:%M")
             end_time = (
-                block.end_time.strftime("%H:%M")
-                if block.end_time is not None
+                session.end_time.strftime("%H:%M")
+                if session.end_time is not None
                 else "Ongoing"
             )
 
-            processes = ", ".join(block.processes) or "Unknown"
-            context = ", ".join(block.context) or "No additional context"
+            session_blocks: list[str] = []
+
+            for block in session.work_blocks:
+                processes = ", ".join(block.processes) or "Unknown"
+                context = ", ".join(block.context) or "No additional context"
+
+                session_blocks.append(
+                    f"""Category: {block.category}
+Processes: {processes}
+Context: {context}"""
+                )
+
+            blocks_text = "\n\n".join(session_blocks)
 
             activity_sections.append(
-                f"""Time:
+                f"""Session time:
 {start_time}–{end_time}
 
-Category:
-{block.category}
+Primary category:
+{session.primary_category}
 
-Processes:
-{processes}
-
-Context:
-{context}"""
+Observed activities:
+{blocks_text}"""
             )
 
-        activity_text = "\n\n".join(activity_sections)
+        activity_text = "\n\n---\n\n".join(activity_sections)
 
         return f"""You are an AI assistant that prepares professional consultant time reports.
 
@@ -73,8 +82,8 @@ Rules:
 - Never invent meetings, customers, ticket numbers, projects, tasks or outcomes.
 - Never guess work that is not supported by the supplied data.
 - Git commit messages are stronger evidence than window titles.
-- Preserve every time range exactly as provided.
-- Never merge different time ranges.
+- Preserve every session time range exactly as provided.
+- Never merge different session time ranges.
 - Focus on actual work performed.
 - Use professional English.
 - Keep every description to one concise sentence.
@@ -94,11 +103,11 @@ STRICT OUTPUT REQUIREMENTS:
 
 HH:MM–HH:MM: Professional work description
 
-Observed Work Blocks:
+Observed Work Sessions:
 
 {activity_text}
 
-Git Context
+Git Context:
 
 Current branch:
 {branch}
