@@ -56,32 +56,26 @@ class PromptBuilder:
                     processes = ", ".join(block.processes) or "Unknown"
                     context = ", ".join(block.context) or "No additional context"
 
-                    session_blocks.append(
-                        f"""Category: {block.category}
+                    session_blocks.append(f"""Category: {block.category}
 Processes: {processes}
-Context: {context}"""
-                    )
+Context: {context}""")
 
                 blocks_text = "\n\n".join(session_blocks)
 
-                period_sessions.append(
-                    f"""Session category: {session.primary_category}
+                period_sessions.append(f"""Session category: {session.primary_category}
 Observed activities:
-{blocks_text}"""
-                )
+{blocks_text}""")
 
             sessions_text = "\n\n".join(period_sessions)
 
-            activity_sections.append(
-                f"""Report period:
+            activity_sections.append(f"""Report period:
 {start_time}–{end_time}
 
 Primary category:
 {period.primary_category}
 
 Included sessions:
-{sessions_text}"""
-            )
+{sessions_text}""")
 
         activity_text = "\n\n---\n\n".join(activity_sections)
 

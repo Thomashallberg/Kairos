@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from app.models import WorkBlock, ReportPeriod, WorkSession
+from app.models import WorkBlock, WorkSession
 from app.services.report_period_builder import ReportPeriodBuilder
 
 
@@ -72,6 +72,8 @@ def test_related_short_sessions_are_combined_into_larger_report_period():
         supporting_research,
         development_after,
     ]
+
+
 def test_long_supporting_session_is_not_combined():
     start = datetime(2026, 8, 2, 12, 24)
 

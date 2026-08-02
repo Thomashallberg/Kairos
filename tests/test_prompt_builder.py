@@ -34,6 +34,7 @@ class FakeDailyReportService:
             )
         ]
 
+
 class FakeGitIntegration:
     def get_current_branch(self) -> str:
         return "main"

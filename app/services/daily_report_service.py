@@ -1,13 +1,12 @@
 from datetime import date
 
-from app.models import WorkBlock, WorkSession
+from app.models import ReportPeriod, WorkBlock, WorkSession
 from app.services.activity_formatter import ActivityFormatter
 from app.services.activity_grouper import ActivityGrouper
 from app.services.activity_service import ActivityService
+from app.services.report_period_builder import ReportPeriodBuilder
 from app.services.work_block_normalizer import WorkBlockNormalizer
 from app.services.work_session_builder import WorkSessionBuilder
-from app.models import ReportPeriod
-from app.services.report_period_builder import ReportPeriodBuilder
 
 
 class DailyReportService:
@@ -45,7 +44,7 @@ class DailyReportService:
 
     def generate_today_report(self) -> str:
         return self.generate_report(date.today())
-    
+
     def get_report_periods_for_date(
         self,
         target_date: date,

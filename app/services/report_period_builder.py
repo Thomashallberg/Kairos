@@ -31,8 +31,7 @@ class ReportPeriodBuilder:
                     and first.primary_category == last.primary_category
                     and first.end_time == support.start_time
                     and support.end_time == last.start_time
-                    and support_duration
-                    <= timedelta(minutes=maximum_support_minutes)
+                    and support_duration <= timedelta(minutes=maximum_support_minutes)
                 )
 
                 if can_merge:

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from app.models import WorkBlock
+from app.models.work_block import WorkBlock
 
 
 @dataclass(slots=True)
