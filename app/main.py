@@ -1,6 +1,6 @@
 import argparse
 from datetime import date, timedelta
-
+from app.system.ai_runtime import AIRuntime
 from app.ai.ollama_client import OllamaClient
 from app.collectors.activity_tracker import track_activity
 from app.database.connection import SessionLocal, create_database
@@ -71,6 +71,8 @@ def main() -> None:
             print(daily_report_service.generate_report(report_date))
 
         elif command == "summarize":
+            ai_runtime = AIRuntime()
+            ai_runtime.ensure_ready()
             git_integration = GitIntegration()
             prompt_builder = PromptBuilder(
                 daily_report_service,

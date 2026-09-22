@@ -7,15 +7,23 @@ class GitIntegration:
         self.repository_path = Path(repository_path)
 
     def _run_git(self, *args: str) -> str:
-        result = subprocess.run(
-            ["git", *args],
-            cwd=self.repository_path,
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+        try:
+            result = subprocess.run(
+                ["git", *args],
+                cwd=self.repository_path,
+                capture_output=True,
+                text=True,
+                check=True,
+                creationflags=subprocess.CREATE_NO_WINDOW,
+            )
+            return result.stdout.strip()
 
-        return result.stdout.strip()
+        except (
+            subprocess.CalledProcessError,
+            FileNotFoundError,
+            OSError,
+        ):
+            return ""
 
     def get_current_branch(self) -> str:
         return self._run_git(

@@ -14,6 +14,38 @@ class OllamaClient:
         self.host = host.rstrip("/")
         self.model = model
 
+    def is_available(self) -> bool:
+        """Check whether the Ollama server is reachable."""
+        try:
+            response = requests.get(
+                f"{self.host}/api/tags",
+                timeout=2,
+            )
+            response.raise_for_status()
+            return True
+        except requests.RequestException:
+            return False
+
+    def is_model_available(self) -> bool:
+        """Check whether the configured model exists locally."""
+        try:
+            response = requests.get(
+                f"{self.host}/api/tags",
+                timeout=5,
+            )
+            response.raise_for_status()
+
+            models = response.json().get("models", [])
+
+            return any(
+                model.get("name") == self.model
+                or model.get("model") == self.model
+                for model in models
+            )
+
+        except requests.RequestException:
+            return False
+
     def generate(
         self,
         prompt: str,
@@ -43,11 +75,16 @@ class OllamaClient:
 
         data = response.json()
 
-        generated_text = (data.get("response") or data.get("thinking") or "").strip()
+        generated_text = (
+            data.get("response")
+            or data.get("thinking")
+            or ""
+        ).strip()
 
         if not generated_text:
             raise RuntimeError(
-                f"Ollama returned an empty response. Full API response: {data}"
+                f"Ollama returned an empty response. "
+                f"Full API response: {data}"
             )
 
         return generated_text

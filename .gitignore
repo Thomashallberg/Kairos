@@ -24,8 +24,24 @@ __pycache__/
 # Build files
 build/
 dist/
-*.spec
+
 
 # Operating system
 .DS_Store
 Thumbs.db
+
+# PyInstaller build output
+build/
+dist/
+dist_*/
+*.spec.bak
+
+# Inno Setup compiled installer
+installer/output/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local application data
+*.db
