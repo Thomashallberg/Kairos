@@ -59,6 +59,11 @@ class KairosGUI:
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
 
+        # Keep the window hidden while the UI is being built.
+        # This prevents the small startup window from flashing
+        # before Kairos reaches its final size.
+        self.root.withdraw()
+
         self.root.title("Kairos")
         self.root.iconbitmap(resource_path("assets/kairos.ico"))
 
@@ -75,6 +80,9 @@ class KairosGUI:
 
         self._build_ui()
         self.refresh_report()
+        # Finish calculating the layout before showing Kairos.
+        self.root.update_idletasks()
+        self.root.deiconify()
 
     # ------------------------------------------------------------------
     # UI
@@ -476,6 +484,7 @@ class KairosGUI:
         popup.withdraw()
 
         popup.title("Select date")
+        popup.iconbitmap(resource_path("assets/kairos.ico"))
         popup.configure(bg=CARD_BG)
         popup.resizable(False, False)
         popup.transient(self.root)
@@ -609,7 +618,7 @@ class KairosGUI:
         popup.deiconify()
         popup.lift()
         popup.focus_force()
-        popup.grab_set()
+        
         
         
         calendar.selection_set(self.selected_date)
