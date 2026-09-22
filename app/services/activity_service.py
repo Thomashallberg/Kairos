@@ -31,5 +31,8 @@ class ActivityService:
     ) -> list[Activity]:
         return self.repository.get_by_date(target_date)
 
+    def get_activity_dates(self) -> list[date]:
+        return self.repository.get_activity_dates()
+
     def get_today_activities(self) -> list[Activity]:
         return self.get_activities_for_date(date.today())

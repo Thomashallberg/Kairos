@@ -47,3 +47,16 @@ class ActivityRepository:
         )
 
         return list(self.session.scalars(statement).all())
+
+    def get_activity_dates(self) -> list[date]:
+        statement = (
+            select(Activity.start_time)
+            .order_by(Activity.start_time)
+        )
+
+        start_times = self.session.scalars(statement).all()
+
+        return sorted({
+            start_time.date()
+            for start_time in start_times
+        })
